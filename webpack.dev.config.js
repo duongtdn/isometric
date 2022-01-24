@@ -5,7 +5,7 @@ module.exports = {
 		dev: ["./demo/app.js"]
 	},
 	output: {
-		filename: "app.bundle.js",
+		filename: "app.js",
 		path: path.resolve(__dirname, "demo"),
 		publicPath: "/assets/",
 	},
