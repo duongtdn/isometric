@@ -1,22 +1,30 @@
 "use strict"
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
-export default function({ width, height, offset, pen = "draw" }) {
+export default function({ width, height, offset, pen = "pencil" }) {
 
   const canvas = useRef();
   useEffect(() => canvas.current && offset && setupCanvasListeners(canvas.current), [canvas, offset]);
 
   const pos = useRef({x: 0, y: 0});
 
+  const [cursor, setCursor] = useState(cursorMode[pen]);
+
   const penRef = useRef(pen);
   useEffect(() => {
-    penRef.current = pen
+    penRef.current = pen;
+    setCursor(cursorMode[pen]);
   }, [pen]);
+
+  const operation = {
+    pencil: draw,
+    eraser: erase,
+  }
 
   return (
     <canvas ref = {canvas}
-            style = {{ border: "1px solid #686868", position: "absolute", left: 0, right: 0 }}
+            style = {{ border: "1px solid #686868", position: "absolute", left: 0, right: 0, cursor }}
             width = {width}
             height = {height}
     />
@@ -24,7 +32,12 @@ export default function({ width, height, offset, pen = "draw" }) {
 
   function setupCanvasListeners(canvas) {
     canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mousedown', setPosition);
+    canvas.addEventListener('mousedown', handleMouseDown);
+  }
+
+  function handleMouseDown(e) {
+    setPosition(e);
+    handleMouseMove(e);
   }
 
   function setPosition(e) {
@@ -39,20 +52,15 @@ export default function({ width, height, offset, pen = "draw" }) {
 
     const ctx = canvas.current.getContext("2d");
 
-    if (penRef.current === "draw") {
-      draw(e, ctx);
-    } else {
-      clear(e, ctx);
-    }
-
+    operation[penRef.current] && operation[penRef.current](e, ctx);
   }
 
   function draw(e, ctx) {
 
     ctx.beginPath();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = '#c0392b';
+    ctx.strokeStyle = '#666';
 
     ctx.moveTo(pos.current.x, pos.current.y);
     setPosition(e);
@@ -61,10 +69,14 @@ export default function({ width, height, offset, pen = "draw" }) {
     ctx.stroke();
   }
 
-  function clear(e, ctx) {
+  function erase(e, ctx) {
     setPosition(e);
-    ctx.clearRect(pos.current.x, pos.current.y, 10, 10);
-
+    ctx.clearRect(pos.current.x-10, pos.current.y-10, 20, 20); // todo: have penSize to replace hardcode
   }
 
 }
+
+const cursorMode = {
+  pencil: "crosshair",
+  eraser: "not-allowed",
+};

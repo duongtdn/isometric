@@ -7,14 +7,14 @@ import DrawingBoard from "../src/DrawingBoard";
 
 const App = () => {
 
-  const [pen, setPen] = useState("draw");
+  const [pen, setPen] = useState("pencil");
 
   return (
     <div className = "container">
       <div> ISOMETRIC </div>
       <div>
         <button onClick = {saveImage}>Save</button>
-        <button onClick = {e => setPen("draw")}>Draw</button>
+        <button onClick = {e => setPen("pencil")}>Draw</button>
         <button onClick = {e => setPen("eraser")}>Eraser</button>
       </div>
       <DrawingBoard width = "1200px" height = "700px" pen = {pen} />
