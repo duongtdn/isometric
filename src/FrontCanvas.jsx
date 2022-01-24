@@ -5,9 +5,12 @@ import React, { useRef, useEffect, useState } from "react";
 export default function({ width, height, offset, pen = "pencil" }) {
 
   const canvas = useRef();
-  useEffect(() => canvas.current && offset && setupCanvasListeners(canvas.current), [canvas, offset]);
+  useEffect(() => canvas.current && setupCanvasListeners(canvas.current), [canvas]);
 
   const pos = useRef({x: 0, y: 0});
+
+  const offsetRef = useRef(offset);
+  useEffect(() => offsetRef.current = offset, [offset]);
 
   const [cursor, setCursor] = useState(cursorMode[pen]);
 
@@ -41,15 +44,15 @@ export default function({ width, height, offset, pen = "pencil" }) {
   }
 
   function setPosition(e) {
-    if (offset) {
+    if (offsetRef.current) {
       pos.current = calculateMousePositionOverCanvas(e);
     }
   }
 
   function calculateMousePositionOverCanvas(e) {
     return {
-      x: e.clientX - offset.left,
-      y: e.clientY - offset.top,
+      x: e.clientX - offsetRef.current.left,
+      y: e.clientY - offsetRef.current.top,
     };
   }
 
@@ -62,7 +65,6 @@ export default function({ width, height, offset, pen = "pencil" }) {
   }
 
   function draw(e, ctx) {
-
     const position = calculateMousePositionOverCanvas(e);
 
     ctx.lineCap = 'round';
