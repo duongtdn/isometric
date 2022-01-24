@@ -25,7 +25,7 @@ export default function() {
           <i className="fas fa-eraser"></i> Eraser
         </button>
       </div>
-      <DrawingBoard width = "1200px" height = "700px" pen = {pen} />
+      <DrawingBoard pen = {pen} />
     </div>
   );
 
