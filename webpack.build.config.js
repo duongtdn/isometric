@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
 	entry: {
-		dev: ["./demo/app.js"]
+		app: ["./demo/app.js"]
 	},
 	output: {
     libraryTarget : 'commonjs2',
