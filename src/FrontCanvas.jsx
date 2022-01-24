@@ -42,9 +42,15 @@ export default function({ width, height, offset, pen = "pencil" }) {
 
   function setPosition(e) {
     if (offset) {
-      pos.current.x = e.clientX - offset.left;
-      pos.current.y = e.clientY - offset.top;
+      pos.current = calculateMousePositionOverCanvas(e);
     }
+  }
+
+  function calculateMousePositionOverCanvas(e) {
+    return {
+      x: e.clientX - offset.left,
+      y: e.clientY - offset.top,
+    };
   }
 
   function handleMouseMove(e) {
@@ -57,16 +63,25 @@ export default function({ width, height, offset, pen = "pencil" }) {
 
   function draw(e, ctx) {
 
-    ctx.beginPath();
-    ctx.lineWidth = 2;
+    const position = calculateMousePositionOverCanvas(e);
+
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#666';
 
-    ctx.moveTo(pos.current.x, pos.current.y);
-    setPosition(e);
-    ctx.lineTo(pos.current.x, pos.current.y);
+    stroke(4, "0.2");
+    stroke(2, "1");
 
-    ctx.stroke();
+    setPosition(e);
+
+    function stroke(lineWidth, alpha) {
+      ctx.lineWidth = lineWidth;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.moveTo(pos.current.x, pos.current.y);
+      ctx.lineTo(position.x, position.y);
+      ctx.closePath();
+      ctx.stroke();
+    }
   }
 
   function erase(e, ctx) {
