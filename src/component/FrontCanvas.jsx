@@ -37,13 +37,21 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
 
   function setupCanvasListeners(canvas) {
     canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('touchmove', handleMouseMove);
     canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('touchstart', startEditing);
     canvas.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener('touchend', handleMouseUp);
     return true;
   }
 
   function handleMouseDown(e) {
     if (e.buttons !== 1) return;
+    startEditing(e);
+  }
+
+  function startEditing(e) {
+    e.preventDefault();
     setPosition(e);
     status.current = "editing";
     handleMouseMove(e);
@@ -56,9 +64,11 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
   }
 
   function calculateMousePositionOverCanvas(e) {
+    const clientX = e.touches? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches? e.touches[0].clientY : e.clientY;
     return {
-      x: e.clientX - offsetRef.current.left,
-      y: e.clientY - offsetRef.current.top,
+      x: clientX - offsetRef.current.left,
+      y: clientY - offsetRef.current.top,
     };
   }
 
