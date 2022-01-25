@@ -14,6 +14,8 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
 
   const [cursor, setCursor] = useState(cursorMode[pen]);
 
+  const status = useRef("lock");
+
   const penRef = useRef(pen);
   useEffect(() => {
     penRef.current = pen;
@@ -43,6 +45,7 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
   function handleMouseDown(e) {
     if (e.buttons !== 1) return;
     setPosition(e);
+    status.current = "editing";
     handleMouseMove(e);
   }
 
@@ -60,8 +63,7 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
   }
 
   function handleMouseMove(e) {
-    if (e.buttons !== 1) return;
-
+    if (status.current !== "editing") return;
     const ctx = canvas.current.getContext("2d");
 
     operation[penRef.current] && operation[penRef.current](e, ctx);
@@ -95,6 +97,8 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
   }
 
   function handleMouseUp(e) {
+    if (status.current !== "editing") return;
+    status.current = "lock";
     const data = canvas.current.toDataURL();
     onSnapshotCreated(data);
   }
