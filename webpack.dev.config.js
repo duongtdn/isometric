@@ -2,11 +2,11 @@ const path = require("path");
 
 module.exports = {
 	entry: {
-		dev: ["./demo/app.js"]
+		dev: ["./src/application/app.js"]
 	},
 	output: {
 		filename: "app.js",
-		path: path.resolve(__dirname, "demo"),
+		// path: path.resolve(__dirname, "demo"),
 		publicPath: "/assets/",
 	},
 	resolve: {
@@ -27,11 +27,11 @@ module.exports = {
 	devServer: {
 		static: [
 			{
-				directory: path.join(__dirname, 'demo'),
+				directory: path.join(__dirname, 'src/asset'),
 				publicPath: "/",
 			},
 			{
-				directory: path.join(__dirname, 'demo'),
+				directory: path.join(__dirname, 'src/asset'),
 				publicPath: "/assets/",
 			},
 		],
