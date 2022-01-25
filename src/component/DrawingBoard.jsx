@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import BackgroundCanvas from "./BackgroundCanvas";
 import FrontCanvas from "./FrontCanvas";
 
-export default function({ distance = 35, pen }) {
+export default function({ distance = 35, pen, onCanvasReady, onSnapshotCreated }) {
 
   const [offset, setOffset] = useState();
   const [width, setWidth] = useState(0);
@@ -26,8 +26,17 @@ export default function({ distance = 35, pen }) {
       {
         width && height?
           <div>
-            <BackgroundCanvas width = {width} height = {height} distance = {distance} />
-            <FrontCanvas width = {width} height = {height} offset = {offset} pen = {pen} />
+            <BackgroundCanvas width = {width}
+                              height = {height}
+                              distance = {distance}
+            />
+            <FrontCanvas  width = {width}
+                          height = {height}
+                          offset = {offset}
+                          pen = {pen}
+                          onCanvasReady = {onCanvasReady}
+                          onSnapshotCreated = {onSnapshotCreated}
+            />
           </div>
         : null
       }

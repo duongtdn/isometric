@@ -2,10 +2,10 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
-export default function({ width, height, offset, pen = "pencil" }) {
+export default function({ width, height, offset, pen = "pencil", onCanvasReady, onSnapshotCreated }) {
 
   const canvas = useRef();
-  useEffect(() => canvas.current && setupCanvasListeners(canvas.current), [canvas]);
+  useEffect(() => canvas.current && setupCanvasListeners(canvas.current) && onCanvasReady(canvas.current), [canvas]);
 
   const pos = useRef({x: 0, y: 0});
 
@@ -23,7 +23,7 @@ export default function({ width, height, offset, pen = "pencil" }) {
   const operation = {
     pencil: draw,
     eraser: erase,
-  }
+  };
 
   return (
     <canvas ref = {canvas}
@@ -36,9 +36,12 @@ export default function({ width, height, offset, pen = "pencil" }) {
   function setupCanvasListeners(canvas) {
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
+    return true;
   }
 
   function handleMouseDown(e) {
+    if (e.buttons !== 1) return;
     setPosition(e);
     handleMouseMove(e);
   }
@@ -89,6 +92,11 @@ export default function({ width, height, offset, pen = "pencil" }) {
   function erase(e, ctx) {
     setPosition(e);
     ctx.clearRect(pos.current.x-10, pos.current.y-10, 20, 20); // todo: have penSize to replace hardcode
+  }
+
+  function handleMouseUp(e) {
+    const data = canvas.current.toDataURL();
+    onSnapshotCreated(data);
   }
 
 }
