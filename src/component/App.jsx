@@ -14,6 +14,11 @@ export default function() {
 
   const canvasRef = useRef();
 
+  useEffect(() => {
+    document.addEventListener("keyup", handleKeyUp);
+    return () => document.removeEventListener("keyup", handleKeyUp);
+  }, []);
+
   return (
     <div className = "container">
       <h3 className="w3-text-blue">
@@ -106,6 +111,26 @@ export default function() {
       ctx.drawImage(img, 0, 0);
     });
     img.setAttribute("src", strDataURI);
+  }
+
+  function handleKeyUp(e) {
+    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+    e.returnValue=false;
+    if (e.ctrlKey && e.code === "KeyZ") {
+      undo();
+    }
+    if (e.ctrlKey && e.code === "KeyY") {
+      redo();
+    }
+    if (e.ctrlKey && e.altKey && e.code === "KeyS") {
+      save();
+    }
+    if (e.ctrlKey && e.altKey && e.code === "KeyL") {
+      load()
+    }
+    if (e.ctrlKey && e.altKey && e.code === "KeyN") {
+      clear();
+    }
   }
 
 }
