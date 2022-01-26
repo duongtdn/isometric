@@ -42,6 +42,7 @@ export default function({ width, height, offset, pen = "pencil", onCanvasReady, 
     canvas.addEventListener('touchstart', startEditing);
     canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('touchend', handleMouseUp);
+    canvas.addEventListener('mouseleave', handleMouseUp);
     return true;
   }
 
